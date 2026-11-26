@@ -2,3 +2,5 @@ fastapi==0.165.0
 uvicorn[standard]==0.54.0
 sqlmodel==0.0.50
 litellm==1.111.0
+# LiteLLM needs tenacity for num_retries but does not install it.
+tenacity==9.2.1
