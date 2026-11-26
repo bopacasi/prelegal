@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { NdaCreator } from "@/components/NdaCreator";
 import { loadStandardTerms } from "@/lib/nda/load";
+
+export const metadata: Metadata = { title: "Mutual NDA Creator" };
 
 /** Reads the Mutual NDA template from data/templates/ when the page is built. */
 export default async function Home() {

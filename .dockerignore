@@ -1,4 +1,6 @@
-# Keep the Docker build context small: only frontend/ and data/ are used.
+# Keep the frontend build context (the repo root) small: it uses only frontend/ and data/.
+backend
+tests
 .git
 .claude
 scripts
@@ -8,3 +10,8 @@ scripts
 **/.env.*
 **/*.log
 **/.DS_Store
+
+# Backend and test caches
+**/.venv
+**/__pycache__
+**/.pytest_cache
