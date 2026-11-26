@@ -1,0 +1,1007 @@
+{
+  "schema_version": 1,
+  "description": "Legal agreement templates from Common Paper, used as the base documents that Prelegal fills in and modifies.",
+  "source": "https://github.com/CommonPaper",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Common Paper, Inc. (https://commonpaper.com)"
+  },
+  "field_sources": {
+    "coverpage": "Value comes from the agreement's Cover Page.",
+    "keyterms": "Value comes from the Key Terms section of the Cover Page.",
+    "orderform": "Value comes from an Order Form.",
+    "businessterms": "Value comes from the Business Terms section of the Cover Page.",
+    "sow": "Value comes from a Statement of Work."
+  },
+  "templates": [
+    {
+      "slug": "mutual-nda",
+      "name": "Mutual Non-Disclosure Agreement",
+      "short_name": "Mutual NDA",
+      "category": "confidentiality",
+      "description": "Lets two parties share confidential information with each other, for an agreed purpose, while each protects the other's information.",
+      "version": "1.0",
+      "files": [
+        {
+          "role": "cover_page",
+          "path": "mutual-nda/cover-page.md",
+          "source_path": "Mutual-NDA-coverpage.md",
+          "placeholders": [
+            "Evaluating whether to enter into a business relationship with the other party.",
+            "Today’s date",
+            "1 year(s)",
+            "Fill in state",
+            "Fill in city or county and state, i.e. “courts located in New Castle, DE”"
+          ]
+        },
+        {
+          "role": "standard_terms",
+          "path": "mutual-nda/standard-terms.md",
+          "source_path": "Mutual-NDA.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Effective Date",
+          "source": "coverpage",
+          "occurrences": 1
+        },
+        {
+          "name": "Governing Law",
+          "source": "coverpage",
+          "occurrences": 2
+        },
+        {
+          "name": "Jurisdiction",
+          "source": "coverpage",
+          "occurrences": 2
+        },
+        {
+          "name": "MNDA Term",
+          "source": "coverpage",
+          "occurrences": 1
+        },
+        {
+          "name": "Purpose",
+          "source": "coverpage",
+          "occurrences": 3
+        },
+        {
+          "name": "Term of Confidentiality",
+          "source": "coverpage",
+          "occurrences": 1
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/Mutual-NDA",
+        "commit": "2a3068b6c0ab6015c440f541d5b215bc3ac2f4cb",
+        "commit_date": "2022-06-07"
+      },
+      "license": "CC BY 4.0"
+    },
+    {
+      "slug": "cloud-service-agreement",
+      "name": "Cloud Service Agreement",
+      "short_name": "CSA",
+      "category": "commercial",
+      "description": "Terms for selling and buying cloud software and SaaS products.",
+      "version": "3.0",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "cloud-service-agreement/standard-terms.md",
+          "source_path": "CSA.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Customer",
+          "source": "coverpage",
+          "occurrences": 67
+        },
+        {
+          "name": "Provider",
+          "source": "coverpage",
+          "occurrences": 54
+        },
+        {
+          "name": "Chosen Courts",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Customer Covered Claim",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Customer Covered Claims",
+          "source": "keyterms",
+          "occurrences": 4
+        },
+        {
+          "name": "DPA",
+          "source": "keyterms",
+          "occurrences": 4
+        },
+        {
+          "name": "Effective Date",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "General Cap Amount",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Governing Law",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "Provider Covered Claim",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "Provider Covered Claims",
+          "source": "keyterms",
+          "occurrences": 4
+        },
+        {
+          "name": "Non-Renewal Notice Date",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Order Date",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Subscription Period",
+          "source": "orderform",
+          "occurrences": 9
+        },
+        {
+          "name": "Subscription Periods",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Technical Support",
+          "source": "orderform",
+          "occurrences": 1
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/CSA",
+        "commit": "3efceb01e3c8bfb7b302a5f34975aa2b084026a3",
+        "commit_date": "2026-09-30"
+      },
+      "license": "CC BY 4.0"
+    },
+    {
+      "slug": "service-level-agreement",
+      "name": "Service Level Agreement",
+      "short_name": "SLA",
+      "category": "commercial",
+      "description": "Uptime and support commitments, plus service credits when they are missed. Used together with the Cloud Service Agreement.",
+      "version": "2.0",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "service-level-agreement/standard-terms.md",
+          "source_path": "sla.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Customer",
+          "source": "coverpage",
+          "occurrences": 23
+        },
+        {
+          "name": "Provider",
+          "source": "coverpage",
+          "occurrences": 25
+        },
+        {
+          "name": "Response Time Credit",
+          "source": "orderform",
+          "occurrences": 3
+        },
+        {
+          "name": "Scheduled Downtime",
+          "source": "orderform",
+          "occurrences": 3
+        },
+        {
+          "name": "Subscription Period",
+          "source": "orderform",
+          "occurrences": 5
+        },
+        {
+          "name": "Support Channel",
+          "source": "orderform",
+          "occurrences": 3
+        },
+        {
+          "name": "Target Response Time",
+          "source": "orderform",
+          "occurrences": 6
+        },
+        {
+          "name": "Target Uptime",
+          "source": "orderform",
+          "occurrences": 6
+        },
+        {
+          "name": "Uptime Credit",
+          "source": "orderform",
+          "occurrences": 3
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/SLA",
+        "commit": "5b0e6336f058a66c4976d70ecabf1f5fb9ef3af4",
+        "commit_date": "2025-05-20"
+      },
+      "license": "CC BY 4.0",
+      "used_with": [
+        "cloud-service-agreement"
+      ]
+    },
+    {
+      "slug": "software-license-agreement",
+      "name": "Software License Agreement",
+      "short_name": "Software License",
+      "category": "commercial",
+      "description": "Terms for licensing software that the customer installs and runs itself.",
+      "version": "1.1",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "software-license-agreement/standard-terms.md",
+          "source_path": "Software-License-Agreement.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Customer",
+          "source": "coverpage",
+          "occurrences": 71
+        },
+        {
+          "name": "Provider",
+          "source": "coverpage",
+          "occurrences": 68
+        },
+        {
+          "name": "Additional Warranties",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Chosen Courts",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Customer Covered Claim",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Customer Covered Claims",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Effective Date",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "General Cap Amount",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Governing Law",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "Increased Cap Amount",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Increased Claims",
+          "source": "keyterms",
+          "occurrences": 4
+        },
+        {
+          "name": "Provider Covered Claim",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "Provider Covered Claims",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "Unlimited Claims",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Deletion Procedure",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "License Limits",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Non-Renewal Notice Date",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Order Date",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Payment Process",
+          "source": "orderform",
+          "occurrences": 5
+        },
+        {
+          "name": "Permitted Uses",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Subscription Period",
+          "source": "orderform",
+          "occurrences": 7
+        },
+        {
+          "name": "Subscription Periods",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Warranty Period",
+          "source": "orderform",
+          "occurrences": 1
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/Software-License-Agreement",
+        "commit": "8ea7de38148a8a0c235b7aaf31487028c2e519ca",
+        "commit_date": "2025-05-20"
+      },
+      "license": "CC BY 4.0"
+    },
+    {
+      "slug": "professional-services-agreement",
+      "name": "Professional Services Agreement",
+      "short_name": "PSA",
+      "category": "services",
+      "description": "Terms for professional services delivered under one or more Statements of Work.",
+      "version": "1.0",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "professional-services-agreement/standard-terms.md",
+          "source_path": "psa.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Additional Warranties",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Chosen Courts",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Customer",
+          "source": "keyterms",
+          "occurrences": 68
+        },
+        {
+          "name": "Customer Covered Claim",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Customer Covered Claims",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Customer Policies",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "DPA",
+          "source": "keyterms",
+          "occurrences": 4
+        },
+        {
+          "name": "Effective Date",
+          "source": "keyterms",
+          "occurrences": 4
+        },
+        {
+          "name": "General Cap Amount",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Governing Law",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Increased Cap Amount",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Increased Claims",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "Insurance Minimums",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Provider",
+          "source": "keyterms",
+          "occurrences": 70
+        },
+        {
+          "name": "Provider Covered Claim",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Provider Covered Claims",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "SOW Term",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Security Policy",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Unlimited Claims",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Customer Obligations",
+          "source": "sow",
+          "occurrences": 1
+        },
+        {
+          "name": "Deliverable",
+          "source": "sow",
+          "occurrences": 5
+        },
+        {
+          "name": "Deliverables",
+          "source": "sow",
+          "occurrences": 18
+        },
+        {
+          "name": "Fees",
+          "source": "sow",
+          "occurrences": 11
+        },
+        {
+          "name": "Payment Period",
+          "source": "sow",
+          "occurrences": 3
+        },
+        {
+          "name": "Rejection Period",
+          "source": "sow",
+          "occurrences": 1
+        },
+        {
+          "name": "Resubmission Period",
+          "source": "sow",
+          "occurrences": 1
+        },
+        {
+          "name": "Time of Assignment",
+          "source": "sow",
+          "occurrences": 2
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/PSA",
+        "commit": "3fb650a72d229f6d6e6d64abebae5e83c6699535",
+        "commit_date": "2025-05-23"
+      },
+      "license": "CC BY 4.0"
+    },
+    {
+      "slug": "data-processing-agreement",
+      "name": "Data Processing Agreement",
+      "short_name": "DPA",
+      "category": "privacy",
+      "description": "Data protection terms for a provider that processes personal data on a customer's behalf, covering GDPR and similar laws.",
+      "version": "1.0",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "data-processing-agreement/standard-terms.md",
+          "source_path": "DPA.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Agreement",
+          "source": "keyterms",
+          "occurrences": 9
+        },
+        {
+          "name": "Approved Subprocessors",
+          "source": "keyterms",
+          "occurrences": 4
+        },
+        {
+          "name": "Categories of Data Subjects",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Categories of Personal Data",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Customer",
+          "source": "keyterms",
+          "occurrences": 73
+        },
+        {
+          "name": "Duration of Processing",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Frequency of Transfer",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Governing Member State",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Nature and Purpose of Processing",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Provider",
+          "source": "keyterms",
+          "occurrences": 74
+        },
+        {
+          "name": "Provider Security Contact",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Security Policy",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Special Category Data",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Special Category Data Restrictions or Safeguards",
+          "source": "keyterms",
+          "occurrences": 1
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/DPA",
+        "commit": "9f1c40d3fb0bb900397a919d058a9c0870f6b0f0",
+        "commit_date": "2025-05-09"
+      },
+      "license": "CC BY 4.0"
+    },
+    {
+      "slug": "business-associate-agreement",
+      "name": "Business Associate Agreement",
+      "short_name": "BAA",
+      "category": "privacy",
+      "description": "HIPAA terms for a business associate that handles protected health information.",
+      "version": "1.0",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "business-associate-agreement/standard-terms.md",
+          "source_path": "BAA.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Agreement",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "BAA Effective Date",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Breach Notification Period",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Company",
+          "source": "keyterms",
+          "occurrences": 26
+        },
+        {
+          "name": "Limitations",
+          "source": "keyterms",
+          "occurrences": 5
+        },
+        {
+          "name": "Provider",
+          "source": "keyterms",
+          "occurrences": 58
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/BAA",
+        "commit": "5f1fd992df1d0c78bf69997e1881e4107fa75695",
+        "commit_date": "2025-05-23"
+      },
+      "license": "CC BY 4.0"
+    },
+    {
+      "slug": "ai-addendum",
+      "name": "AI Addendum",
+      "short_name": "AI Addendum",
+      "category": "addendum",
+      "description": "Addendum covering the use of AI features, including how inputs and outputs may be used and whether they may be used for model training.",
+      "version": "1.0",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "ai-addendum/standard-terms.md",
+          "source_path": "AI-Addendum.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Customer",
+          "source": "coverpage",
+          "occurrences": 8
+        },
+        {
+          "name": "Improvement Restrictions",
+          "source": "coverpage",
+          "occurrences": 1
+        },
+        {
+          "name": "Provider",
+          "source": "coverpage",
+          "occurrences": 8
+        },
+        {
+          "name": "Training Data",
+          "source": "coverpage",
+          "occurrences": 3
+        },
+        {
+          "name": "Training Purposes",
+          "source": "coverpage",
+          "occurrences": 3
+        },
+        {
+          "name": "Training Restrictions",
+          "source": "coverpage",
+          "occurrences": 1
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/AI-Addendum",
+        "commit": "6d9b044df73a2477c177e5989fca7f8d27df9387",
+        "commit_date": "2025-08-07"
+      },
+      "license": "CC BY 4.0"
+    },
+    {
+      "slug": "design-partner-agreement",
+      "name": "Design Partner Agreement",
+      "short_name": "Design Partner",
+      "category": "partnership",
+      "description": "Terms for an early customer who gets access to a product in development in exchange for feedback.",
+      "version": "1.0",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "design-partner-agreement/standard-terms.md",
+          "source_path": "design-partner-agreement.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Chosen Courts",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Effective Date",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "Fees",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Governing Law",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Notice Address",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Partner",
+          "source": "keyterms",
+          "occurrences": 20
+        },
+        {
+          "name": "Program",
+          "source": "keyterms",
+          "occurrences": 6
+        },
+        {
+          "name": "Provider",
+          "source": "keyterms",
+          "occurrences": 18
+        },
+        {
+          "name": "Term",
+          "source": "keyterms",
+          "occurrences": 3
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/Design-Partner-Agreement",
+        "commit": "ab676a7a4b68ae84f1cfdba9f49a514d3aaa6694",
+        "commit_date": "2026-10-22"
+      },
+      "license": "CC BY 4.0"
+    },
+    {
+      "slug": "partnership-agreement",
+      "name": "Partnership Agreement",
+      "short_name": "Partnership",
+      "category": "partnership",
+      "description": "Terms for business partnerships such as referral, reseller and co-marketing arrangements.",
+      "version": "1.0",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "partnership-agreement/standard-terms.md",
+          "source_path": "Partnership-Agreement.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "End Date",
+          "source": "businessterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Obligations",
+          "source": "businessterms",
+          "occurrences": 8
+        },
+        {
+          "name": "Payment Process",
+          "source": "businessterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Payment Schedule",
+          "source": "businessterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Territory",
+          "source": "businessterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Additional Warranties",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Brand Guidelines",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Chosen Courts",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Company",
+          "source": "keyterms",
+          "occurrences": 8
+        },
+        {
+          "name": "Company Covered Claim",
+          "source": "keyterms",
+          "occurrences": 3
+        },
+        {
+          "name": "DPA",
+          "source": "keyterms",
+          "occurrences": 4
+        },
+        {
+          "name": "Effective Date",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "General Cap Amount",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Governing Law",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Increased Cap Amount",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Increased Claims",
+          "source": "keyterms",
+          "occurrences": 4
+        },
+        {
+          "name": "Partner",
+          "source": "keyterms",
+          "occurrences": 8
+        },
+        {
+          "name": "Partner Covered Claim",
+          "source": "keyterms",
+          "occurrences": 1
+        },
+        {
+          "name": "Partner Covered Claims",
+          "source": "keyterms",
+          "occurrences": 2
+        },
+        {
+          "name": "Unlimited Claims",
+          "source": "keyterms",
+          "occurrences": 1
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/Partnership-Agreement",
+        "commit": "6edeb5a285206893cfd0ac482267db44d90f317c",
+        "commit_date": "2025-05-23"
+      },
+      "license": "CC BY 4.0"
+    },
+    {
+      "slug": "pilot-agreement",
+      "name": "Pilot Agreement",
+      "short_name": "Pilot",
+      "category": "commercial",
+      "description": "Short-term trial or evaluation terms that let a prospective customer test a product before a full commercial agreement.",
+      "version": "1.1",
+      "files": [
+        {
+          "role": "standard_terms",
+          "path": "pilot-agreement/standard-terms.md",
+          "source_path": "Pilot-Agreement.md"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Chosen Courts",
+          "source": "orderform",
+          "occurrences": 2
+        },
+        {
+          "name": "Customer",
+          "source": "orderform",
+          "occurrences": 35
+        },
+        {
+          "name": "Effective Date",
+          "source": "orderform",
+          "occurrences": 3
+        },
+        {
+          "name": "General Cap Amount",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Governing Law",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Notice Address",
+          "source": "orderform",
+          "occurrences": 1
+        },
+        {
+          "name": "Pilot Period",
+          "source": "orderform",
+          "occurrences": 3
+        },
+        {
+          "name": "Provider",
+          "source": "orderform",
+          "occurrences": 27
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/CommonPaper/Pilot-Agreement",
+        "commit": "5e7cdd4678cd9d6b3178872cce4a01d632f41f14",
+        "commit_date": "2025-07-22"
+      },
+      "license": "CC BY 4.0"
+    }
+  ]
+}
