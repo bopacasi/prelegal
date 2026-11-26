@@ -25,7 +25,7 @@ app/schemas.py     Request and response bodies
 app/deps.py        Dependencies: database session, settings, current user
 app/routers/       HTTP endpoints, kept thin
 app/services/      Logic that works with the database
-app/llm/           LLM clients behind one protocol: LiteLLM (OpenRouter + Cerebras), a scripted fake, a factory
+app/llm/           LLM clients behind one protocol: LiteLLM via OpenRouter, a scripted fake, a factory
 app/chat/          The NDA assistant: request/response schemas, instructions and fields (nda.py), one turn (service.py)
 tests/             pytest unit tests (FastAPI TestClient)
 ```
@@ -39,13 +39,14 @@ The database is **temporary**: SQLite, dropped and recreated empty every time th
 | `DATABASE_URL` | `sqlite:///./prelegal.db` | The Docker image uses `sqlite:////app/db/prelegal.db` |
 | `COOKIE_SECURE` | `false` | Set to `true` when served over HTTPS |
 | `OPENROUTER_API_KEY` | (empty) | Key for the AI assistant, from the root `.env`. Without it the app runs, but chat turns return `502`. |
-| `LLM_MODEL` | `openrouter/openai/gpt-oss-120b` | LiteLLM model name. Requests are pinned to the Cerebras provider. |
-| `LLM_TIMEOUT_SECONDS` | `30` | Per request; one retry |
+| `LLM_MODEL` | `openrouter/openrouter/free` | LiteLLM model name. The default is OpenRouter's Free Models Router (no credits needed). |
+| `LLM_PROVIDER` | (empty) | OpenRouter provider to pin requests to, with no fallback, e.g. `cerebras` with `openrouter/openai/gpt-oss-120b`. Empty lets OpenRouter choose. |
+| `LLM_TIMEOUT_SECONDS` | `30` | Per request; one retry (needs `tenacity`) |
 | `FAKE_LLM` | `false` | `true` swaps in a scripted assistant (`app/llm/fake.py`). For tests only. |
 
 ## The AI assistant
 
-Each turn rebuilds the instructions from the current NDA values, the fields that are still missing, and today's date, so the backend keeps no chat state. The model must answer in a strict JSON schema (`reply` and `updates`). The answer is then validated with pydantic: real dates, years from 1 to 99, the allowed term values only, no unknown fields. Anything invalid counts as a failed turn (`502`).
+Each turn rebuilds the instructions from the current NDA values, the fields that are still missing, and today's date, so the backend keeps no chat state. The model must answer in a strict JSON schema (`reply` and `updates`). OpenRouter only routes to models that support it (`require_parameters`). The answer is then validated with pydantic: real dates, years from 1 to 99, the allowed term values only, no unknown fields. Anything invalid counts as a failed turn (`502`).
 
 ## Tests
 

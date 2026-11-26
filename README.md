@@ -19,7 +19,7 @@ Sign in with any name and email. The login is a placeholder with no password or 
 
 ### The AI assistant
 
-The NDA creator is a chat with an AI assistant (via [OpenRouter](https://openrouter.ai), served by Cerebras). To enable it, copy `.env.example` to `.env` and set `OPENROUTER_API_KEY`. The OpenRouter account needs credits. Without a key everything else works, but the assistant answers with "unavailable". The tests never call the real model.
+The NDA creator is a chat with an AI assistant, reached through [OpenRouter](https://openrouter.ai). To enable it, copy `.env.example` to `.env` and set `OPENROUTER_API_KEY`. By default it uses OpenRouter's **Free Models Router** (`openrouter/free`), which needs no credits: it picks a free model that supports the assistant's structured answers. Free models vary in quality and speed and are rate-limited. For a faster, consistent model, set `LLM_MODEL` and `LLM_PROVIDER` in `.env`, for example `openai/gpt-oss-120b` on Cerebras (needs credits; see `.env.example`). Without a key everything else works, but the assistant answers with "unavailable". The tests never call the real model.
 
 ## Architecture
 

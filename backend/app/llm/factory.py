@@ -26,4 +26,6 @@ def build_llm(settings: Settings) -> LlmClient:
         return MissingKeyLlmClient()
     from app.llm.litellm_client import LiteLlmClient  # LiteLLM is slow to import
 
-    return LiteLlmClient(settings.openrouter_api_key, settings.llm_model, settings.llm_timeout_seconds)
+    return LiteLlmClient(
+        settings.openrouter_api_key, settings.llm_model, settings.llm_timeout_seconds, settings.llm_provider
+    )

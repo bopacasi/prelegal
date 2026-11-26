@@ -62,7 +62,7 @@ The HTML preview and the `.odt` export both render the same document model (`lib
 
 Each chat turn posts the conversation so far and the current NDA values to `/api/chat/nda`. The backend asks the LLM and returns the assistant's reply plus the fields to update (`updates`). `lib/chat/merge.ts` applies those to the values, and the preview follows. The assistant speaks first. A failed turn leaves the document unchanged and can be retried. The chat history lives only in the page, so it's gone on reload.
 
-The `.odt` file is generated in the browser. The chat messages and NDA values are sent to the backend, which passes them to the LLM provider (OpenRouter, served by Cerebras).
+The `.odt` file is generated in the browser. The chat messages and NDA values are sent to the backend, which passes them to the model through OpenRouter (by default its Free Models Router).
 
 ## License
 

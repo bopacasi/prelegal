@@ -36,6 +36,7 @@ def test_years_only_needed_for_their_term() -> None:
 def test_system_prompt_has_values_date_and_missing_list() -> None:
     prompt = build_system_prompt(values(governingLaw="Delaware"), date(2026, 11, 26))
     assert "Today is 2026-11-26." in prompt
+    assert "no Markdown" in prompt  # the chat shows plain text
     assert '"governingLaw": "Delaware"' in prompt
     assert "Still missing: jurisdiction, party1.name, party1.title" in prompt
 
