@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
+import { SESSION_COOKIE } from "@/lib/config";
 import { proxy } from "./proxy";
 
 function request(path: string, cookie?: string) {
@@ -16,7 +17,7 @@ describe("proxy", () => {
   });
 
   it("lets requests with a session cookie through", () => {
-    const response = proxy(request("/nda", "prelegal_session=abc"));
+    const response = proxy(request("/nda", `${SESSION_COOKIE}=abc`));
     expect(response.headers.get("x-middleware-next")).toBe("1");
   });
 });

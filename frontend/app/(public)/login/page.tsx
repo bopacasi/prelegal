@@ -2,11 +2,17 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/login/LoginForm";
 import { getCurrentUser } from "@/lib/api/server";
+import { HOME_PATH } from "@/lib/config";
 
 export const metadata: Metadata = { title: "Sign in" };
 
+/** Signed-in users skip this page; if the backend is down, the form still shows. */
+async function isSignedIn(): Promise<boolean> {
+  return Boolean(await getCurrentUser().catch(() => null));
+}
+
 export default async function LoginPage() {
-  if (await getCurrentUser()) redirect("/nda");
+  if (await isSignedIn()) redirect(HOME_PATH);
 
   return (
     <main className="flex min-h-screen items-center justify-center px-4">

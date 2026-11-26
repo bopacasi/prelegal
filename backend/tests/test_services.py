@@ -1,8 +1,10 @@
 """Service tests, run directly against the database."""
 
+import pytest
 from sqlmodel import Session, select
 
 from app.models import User
+from app.services import users
 from app.services.sessions import create_session, delete_session, get_user_by_token
 from app.services.users import upsert_user
 
@@ -32,3 +34,16 @@ def test_sessions_are_independent(db: Session) -> None:
     assert first != second
     delete_session(db, first)
     assert get_user_by_token(db, second) == user
+
+
+def test_upsert_user_survives_concurrent_first_login(db: Session, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Another request inserts the same email between our lookup and our insert."""
+    upsert_user(db, "Ada", "ada@example.com")
+    real_find_user = users.find_user
+    lookups = iter([None])  # the first lookup misses, as if the row didn't exist yet
+    monkeypatch.setattr(users, "find_user", lambda db, email: next(lookups, real_find_user(db, email)))
+
+    user = upsert_user(db, "Ada King", "ada@example.com")
+
+    assert user.name == "Ada King"
+    assert len(db.exec(select(User)).all()) == 1

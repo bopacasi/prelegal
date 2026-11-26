@@ -2,11 +2,19 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { login } from "@/lib/api/client";
+import { ApiError, login } from "@/lib/api/client";
+import { HOME_PATH } from "@/lib/config";
 
 const inputClass =
   "mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-xs focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-600/20";
 
+function errorMessage(error: unknown): string {
+  return error instanceof ApiError && error.status < 500
+    ? "Please enter both a name and an email."
+    : "Prelegal is temporarily unavailable. Please try again in a moment.";
+}
+
+/** Fake sign-in: any name and email are accepted. */
 export function LoginForm() {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -20,10 +28,10 @@ export function LoginForm() {
     setError(null);
     try {
       await login(name, email);
-      router.replace("/nda");
+      router.replace(HOME_PATH);
       router.refresh();
-    } catch {
-      setError("Sign-in failed. Please check both fields and try again.");
+    } catch (err) {
+      setError(errorMessage(err));
       setPending(false);
     }
   }
@@ -32,11 +40,23 @@ export function LoginForm() {
     <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
       <label className="block text-sm font-medium text-slate-800">
         Name
-        <input className={inputClass} required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
+        <input
+          className={inputClass}
+          required
+          autoComplete="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </label>
       <label className="block text-sm font-medium text-slate-800">
         Email
-        <input className={inputClass} required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input
+          className={inputClass}
+          required
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
       </label>
       {error && (
         <p role="alert" className="text-sm text-red-700">

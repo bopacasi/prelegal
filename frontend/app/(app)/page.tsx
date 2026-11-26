@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { HOME_PATH } from "@/lib/config";
 
-/** The platform's home is the NDA creator, for now. */
-export default function Home() {
-  redirect("/nda");
+/** The platform has no start page of its own yet. */
+export default function RootRedirect() {
+  redirect(HOME_PATH);
 }

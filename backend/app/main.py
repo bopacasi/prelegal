@@ -14,12 +14,13 @@ from app.routers import auth, health, users
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
+    """Build the app. Run it with a single worker: each start resets the database."""
     settings = settings or load_settings()
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         engine = make_engine(settings.database_url)
-        reset_db(engine)
+        reset_db(engine)  # with several workers, each would wipe the others' data
         app.state.engine = engine
         app.state.settings = settings
         yield

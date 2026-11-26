@@ -1,6 +1,6 @@
 /** Browser-side calls to the backend, through the same-origin /api rewrite. */
 
-export type User = { id: number; name: string; email: string };
+import type { User } from "./types";
 
 export class ApiError extends Error {
   constructor(readonly status: number) {

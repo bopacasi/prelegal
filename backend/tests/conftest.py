@@ -35,6 +35,3 @@ def db(engine: Engine) -> Iterator[Session]:
     with Session(engine) as db:
         yield db
 
-
-def sign_in(client: TestClient, name: str = "Ada Lovelace", email: str = "ada@example.com"):
-    return client.post("/api/auth/login", json={"name": name, "email": email})

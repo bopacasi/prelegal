@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { SESSION_COOKIE } from "./lib/config";
+import { SESSION_COOKIE } from "@/lib/config";
 
 /**
  * Quick gate before rendering: without a session cookie, go to /login.
@@ -11,6 +11,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except the login page, API calls and static files.
-  matcher: ["/((?!login|api|_next/static|_next/image|favicon.ico).*)"],
+  // Everything except /login, /api/*, Next.js assets and the favicon. The
+  // (?:/|$) stops paths that merely start with "login" or "api" being skipped.
+  matcher: ["/((?!(?:login|api)(?:/|$)|_next/static/|_next/image/|favicon\\.ico$).*)"],
 };

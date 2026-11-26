@@ -22,13 +22,14 @@ Sign in with any name and email. The login is a placeholder with no password or 
 | Part | Folder | Tech |
 | --- | --- | --- |
 | Frontend | [`frontend/`](frontend) | Next.js 16, React 19, TypeScript, Tailwind CSS |
-| Backend | [`backend/`](backend) | FastAPI on Python 3.15, SQLModel |
+| Backend | [`backend/`](backend) ([README](backend/README.md)) | FastAPI on Python 3.15, SQLModel |
 | Database | inside the backend container | SQLite, **temporary**: empty on every start |
 | Templates | [`data/templates/`](data/templates) | Common Paper agreements (CC BY 4.0) |
 
 - The browser only talks to the frontend (port 3000). Next.js forwards `/api/*` to the backend, so there's no CORS setup.
 - The backend's API docs are at http://localhost:8000/docs.
-- Signing in creates a server-side session that's referenced by an `HttpOnly` cookie. Signed-in pages check the session with the backend, and everything else redirects to `/login`.
+- Signing in creates a server-side session that's referenced by an `HttpOnly` cookie. Requests without that cookie are redirected to `/login`, except `/login` itself, `/api/*` and static files. Signed-in pages also check the session with the backend, so a session lost in a restart also leads back to `/login`.
+- If the backend is down, signed-in pages show a "temporarily unavailable" message, and `/login` still works.
 - [`compose.yaml`](compose.yaml) defines the stack. The `integration` service (profile `test`) runs the end-to-end tests in [`tests/integration/`](tests/integration).
 
 ## Tests
@@ -37,4 +38,4 @@ Sign in with any name and email. The login is a placeholder with no password or 
 
 1. **Backend unit tests**: pytest with FastAPI's test client (`backend/tests/`).
 2. **Frontend type check and unit tests**: `tsc` and Vitest (`frontend/**/*.test.ts`).
-3. **Integration tests**: pytest against a freshly started stack, going through the frontend the way a browser would.
+3. **Integration tests**: pytest against a freshly started stack, going through the frontend the way a browser would. Then it stops the backend and checks that the frontend shows a message instead of an error (`tests/integration/`).

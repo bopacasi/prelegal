@@ -2,9 +2,9 @@
 
 from fastapi.testclient import TestClient
 
-from app.config import Settings
+from app.config import SESSION_COOKIE, Settings
 from app.main import create_app
-from tests.conftest import sign_in
+from tests.helpers import sign_in
 
 
 def test_health(client: TestClient) -> None:
@@ -18,7 +18,7 @@ def test_login_sets_http_only_session_cookie(client: TestClient) -> None:
     assert response.status_code == 200
     assert response.json() == {"id": 1, "name": "Ada Lovelace", "email": "ada@example.com"}
     cookie = response.headers["set-cookie"]
-    assert cookie.startswith("prelegal_session=")
+    assert cookie.startswith(f"{SESSION_COOKIE}=")
     assert "HttpOnly" in cookie and "SameSite=lax" in cookie
 
 
@@ -31,7 +31,7 @@ def test_me_returns_signed_in_user(client: TestClient) -> None:
 
 def test_me_requires_session(client: TestClient) -> None:
     assert client.get("/api/users/me").status_code == 401
-    client.cookies.set("prelegal_session", "not-a-real-token")
+    client.cookies.set(SESSION_COOKIE, "not-a-real-token")
     assert client.get("/api/users/me").status_code == 401
 
 
@@ -50,7 +50,7 @@ def test_logout_ends_session(client: TestClient) -> None:
     sign_in(client)
     response = client.post("/api/auth/logout")
     assert response.status_code == 204
-    assert 'prelegal_session=""' in response.headers["set-cookie"]
+    assert f'{SESSION_COOKIE}=""' in response.headers["set-cookie"]
     assert client.get("/api/users/me").status_code == 401
 
 
@@ -61,7 +61,18 @@ def test_logout_without_session_is_harmless(client: TestClient) -> None:
 def test_database_starts_empty_on_each_start(settings: Settings) -> None:
     with TestClient(create_app(settings)) as client:
         sign_in(client)
-        token = client.cookies["prelegal_session"]
+        token = client.cookies[SESSION_COOKIE]
     with TestClient(create_app(settings)) as restarted:
-        restarted.cookies.set("prelegal_session", token)
+        restarted.cookies.set(SESSION_COOKIE, token)
         assert restarted.get("/api/users/me").status_code == 401
+
+
+def test_login_again_ends_previous_session(client: TestClient) -> None:
+    sign_in(client)
+    old_token = client.cookies[SESSION_COOKIE]
+    sign_in(client)
+    assert client.cookies[SESSION_COOKIE] != old_token
+
+    client.cookies.clear()  # send only the old token
+    client.cookies.set(SESSION_COOKIE, old_token)
+    assert client.get("/api/users/me").status_code == 401

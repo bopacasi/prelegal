@@ -2,9 +2,7 @@
 
 from typing import Annotated
 
-from pydantic import BaseModel, StringConstraints
-
-from app.models import User
+from pydantic import BaseModel, ConfigDict, StringConstraints
 
 NonBlank = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=320)]
 
@@ -17,10 +15,8 @@ class LoginRequest(BaseModel):
 
 
 class UserRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str
     email: str
-
-    @classmethod
-    def of(cls, user: User) -> "UserRead":
-        return cls.model_validate(user, from_attributes=True)

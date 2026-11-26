@@ -21,7 +21,7 @@ type Manifest = {
 
 /**
  * Load and parse a template's Standard Terms, using the manifest to find the
- * file. Server-only: runs when Next.js renders the page at build time.
+ * file. Server-only: runs when Next.js renders the page.
  */
 export async function loadStandardTerms(
   slug = "mutual-nda",

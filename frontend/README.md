@@ -25,10 +25,11 @@ app/(public)/login      Sign-in page (fake login: any name and email)
 app/(app)/layout.tsx    Signed-in area: checks the session with the backend, renders the app shell
 app/(app)/nda           The Mutual NDA creator
 proxy.ts                Sends requests without a session cookie to /login
-next.config.ts          Rewrites /api/* to the backend (BACKEND_URL, fixed at build time)
+next.config.ts          Rewrites /api/* to the backend at BACKEND_URL (the rewrite is fixed at build time)
+lib/config.ts           BACKEND_URL, the session cookie name and the signed-in home path
 lib/api/client.ts       Browser calls to the backend: login, logout
-lib/api/server.ts       getCurrentUser() for server components
-components/shell        App header with "Signed in as …" and Sign out
+lib/api/server.ts       getCurrentUser() for server components (reads BACKEND_URL at runtime)
+components/shell        App header with "Signed in as …" and Sign out; the "unavailable" page
 components/login        The sign-in form
 components/Nda*         NDA creator: form state, form, preview
 lib/nda/                NDA logic: template loading and parsing, document model, .odt export
@@ -38,7 +39,7 @@ lib/nda/                NDA logic: template loading and parsing, document model,
 
 1. Signing in posts the name and email to `/api/auth/login`. The backend creates a session and sets the `prelegal_session` cookie (`HttpOnly`).
 2. `proxy.ts` sends any request without that cookie to `/login`. It's only a quick check.
-3. The `(app)` layout then asks the backend who the user is (`/api/users/me`). If the session no longer exists, for example because the backend restarted with an empty database, it redirects to `/login`.
+3. The `(app)` layout then asks the backend who the user is (`/api/users/me`). If the session no longer exists, for example because the backend restarted with an empty database, it redirects to `/login`. If the backend can't be reached, it shows a "temporarily unavailable" page.
 
 ## How the NDA creator works
 

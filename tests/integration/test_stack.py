@@ -12,7 +12,7 @@ import pytest
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000")
-COOKIE = "prelegal_session"
+COOKIE = "prelegal_session"  # must match backend/app/config.py
 
 
 @pytest.fixture
@@ -30,6 +30,7 @@ def user() -> dict[str, str]:
 def sign_in(browser: httpx2.Client, user: dict[str, str]) -> str:
     response = browser.post("/api/auth/login", json=user)
     assert response.status_code == 200, response.text
+    assert "httponly" in response.headers["set-cookie"].lower()
     return browser.cookies[COOKIE]
 
 
@@ -49,6 +50,9 @@ def test_frontend_proxies_api_to_backend(browser: httpx2.Client) -> None:
 def test_signed_out_user_is_sent_to_login(browser: httpx2.Client) -> None:
     assert_redirects(browser.get("/"), "/login")
     assert_redirects(browser.get("/nda"), "/login")
+    # Paths that merely start with "login" or "api" are still protected.
+    assert_redirects(browser.get("/login-history"), "/login")
+    assert_redirects(browser.get("/apis"), "/login")
     login_page = browser.get("/login")
     assert login_page.status_code == 200
     assert "Sign in" in login_page.text

@@ -3,10 +3,10 @@
 from collections.abc import Iterator
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Cookie, Depends, HTTPException, Request, status
 from sqlmodel import Session
 
-from app.config import Settings
+from app.config import SESSION_COOKIE, Settings
 from app.models import User
 from app.services.sessions import get_user_by_token
 
@@ -22,16 +22,10 @@ def get_settings(request: Request) -> Settings:
 
 DbSession = Annotated[Session, Depends(get_db)]
 AppSettings = Annotated[Settings, Depends(get_settings)]
+SessionToken = Annotated[str | None, Cookie(alias=SESSION_COOKIE)]
 
 
-def session_token(request: Request, settings: AppSettings) -> str | None:
-    return request.cookies.get(settings.session_cookie)
-
-
-SessionToken = Annotated[str | None, Depends(session_token)]
-
-
-def current_user(db: DbSession, token: SessionToken) -> User:
+def current_user(db: DbSession, token: SessionToken = None) -> User:
     user = get_user_by_token(db, token) if token else None
     if user is None:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Not signed in")
