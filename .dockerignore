@@ -1,0 +1,10 @@
+# Keep the Docker build context small: only frontend/ and data/ are used.
+.git
+.claude
+scripts
+**/node_modules
+**/.next
+**/.env
+**/.env.*
+**/*.log
+**/.DS_Store
