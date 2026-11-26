@@ -1,6 +1,6 @@
 # Prelegal backend
 
-The FastAPI service behind the Prelegal frontend. It currently provides the placeholder sign-in. Run the whole stack from the repo root with `scripts/start.sh`; see the [root README](../README.md).
+The FastAPI service behind the Prelegal frontend. It provides the placeholder sign-in and the AI assistant that fills in the Mutual NDA. Run the whole stack from the repo root with `scripts/start.sh`; see the [root README](../README.md).
 
 ## API
 
@@ -10,6 +10,7 @@ The FastAPI service behind the Prelegal frontend. It currently provides the plac
 | `POST /api/auth/login` | Fake login: any non-blank `name` and `email`. Creates or updates the user, starts a session and sets the `prelegal_session` cookie (`HttpOnly`). |
 | `POST /api/auth/logout` | Ends the session and clears the cookie |
 | `GET /api/users/me` | The signed-in user, or `401` |
+| `POST /api/chat/nda` | One assistant turn: send `messages` (the chat so far) and the NDA `values`; get `reply` and `updates` (only changed fields). `502` if the LLM fails. Requires sign-in. |
 
 Interactive docs: http://localhost:8000/docs while the stack runs.
 
@@ -24,6 +25,8 @@ app/schemas.py     Request and response bodies
 app/deps.py        Dependencies: database session, settings, current user
 app/routers/       HTTP endpoints, kept thin
 app/services/      Logic that works with the database
+app/llm/           LLM clients behind one protocol: LiteLLM (OpenRouter + Cerebras), a scripted fake, a factory
+app/chat/          The NDA assistant: request/response schemas, instructions and fields (nda.py), one turn (service.py)
 tests/             pytest unit tests (FastAPI TestClient)
 ```
 
@@ -35,6 +38,14 @@ The database is **temporary**: SQLite, dropped and recreated empty every time th
 | --- | --- | --- |
 | `DATABASE_URL` | `sqlite:///./prelegal.db` | The Docker image uses `sqlite:////app/db/prelegal.db` |
 | `COOKIE_SECURE` | `false` | Set to `true` when served over HTTPS |
+| `OPENROUTER_API_KEY` | (empty) | Key for the AI assistant, from the root `.env`. Without it the app runs, but chat turns return `502`. |
+| `LLM_MODEL` | `openrouter/openai/gpt-oss-120b` | LiteLLM model name. Requests are pinned to the Cerebras provider. |
+| `LLM_TIMEOUT_SECONDS` | `30` | Per request; one retry |
+| `FAKE_LLM` | `false` | `true` swaps in a scripted assistant (`app/llm/fake.py`). For tests only. |
+
+## The AI assistant
+
+Each turn rebuilds the instructions from the current NDA values, the fields that are still missing, and today's date, so the backend keeps no chat state. The model must answer in a strict JSON schema (`reply` and `updates`). The answer is then validated with pydantic: real dates, years from 1 to 99, the allowed term values only, no unknown fields. Anything invalid counts as a failed turn (`502`).
 
 ## Tests
 

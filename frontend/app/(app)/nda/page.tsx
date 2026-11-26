@@ -13,8 +13,8 @@ export default async function NdaPage() {
       <header className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Mutual NDA Creator</h1>
         <p className="mt-2 max-w-2xl text-slate-600">
-          Fill in the key terms and the agreement updates as you type. When it looks right,
-          download it as an OpenDocument file to review and sign.
+          Tell the assistant about your agreement and it fills in the NDA as you chat. When it
+          looks right, download it as an OpenDocument file to review and sign.
         </p>
       </header>
       <NdaCreator terms={terms} />

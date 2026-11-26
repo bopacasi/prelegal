@@ -10,7 +10,8 @@ from fastapi import FastAPI
 
 from app.config import Settings, load_settings
 from app.db import make_engine, reset_db
-from app.routers import auth, health, users
+from app.llm.factory import build_llm
+from app.routers import auth, chat, health, users
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -23,10 +24,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         reset_db(engine)  # with several workers, each would wipe the others' data
         app.state.engine = engine
         app.state.settings = settings
+        app.state.llm = build_llm(settings)
         yield
         engine.dispose()
 
     app = FastAPI(title="Prelegal API", lifespan=lifespan)
-    for router in (health.router, auth.router, users.router):
+    for router in (health.router, auth.router, users.router, chat.router):
         app.include_router(router)
     return app

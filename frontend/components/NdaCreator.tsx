@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { NdaForm } from "@/components/NdaForm";
+import { NdaChat } from "@/components/NdaChat";
 import { NdaPreview } from "@/components/NdaPreview";
 import { buildNdaDocument, defaultValues, documentFileName, todayIso } from "@/lib/nda/document";
 import type { NdaValues, StandardTerms } from "@/lib/nda/types";
 
-/** Holds the form state and shows the form next to a live preview. */
+/** Holds the NDA values and shows the assistant chat next to a live preview. */
 export function NdaCreator({ terms }: { terms: StandardTerms }) {
   const [values, setValues] = useState<NdaValues>(() => defaultValues());
   const [downloading, setDownloading] = useState(false);
@@ -43,11 +43,11 @@ export function NdaCreator({ terms }: { terms: StandardTerms }) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start">
-      <section aria-labelledby="form-heading" className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
-        <h2 id="form-heading" className="text-lg font-semibold">
-          Key terms
+      <section aria-labelledby="chat-heading" className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
+        <h2 id="chat-heading" className="text-lg font-semibold">
+          Assistant
         </h2>
-        <NdaForm values={values} onChange={setValues} />
+        <NdaChat values={values} onChange={setValues} />
       </section>
 
       <section aria-labelledby="preview-heading" className="lg:sticky lg:top-6">

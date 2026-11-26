@@ -7,6 +7,7 @@ from fastapi import Cookie, Depends, HTTPException, Request, status
 from sqlmodel import Session
 
 from app.config import SESSION_COOKIE, Settings
+from app.llm.base import LlmClient
 from app.models import User
 from app.services.sessions import get_user_by_token
 
@@ -33,3 +34,10 @@ def current_user(db: DbSession, token: SessionToken = None) -> User:
 
 
 CurrentUser = Annotated[User, Depends(current_user)]
+
+
+def get_llm(request: Request) -> LlmClient:
+    return request.app.state.llm
+
+
+Llm = Annotated[LlmClient, Depends(get_llm)]

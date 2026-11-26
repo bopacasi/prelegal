@@ -5,4 +5,5 @@ WORKDIR /tests
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY test_*.py ./
-CMD ["pytest", "-q", "test_stack.py"]
+# test_backend_down.py needs the backend stopped; scripts/test.sh runs it separately.
+CMD ["pytest", "-q", "--ignore=test_backend_down.py"]

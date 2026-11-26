@@ -1,6 +1,6 @@
 # Prelegal frontend
 
-The Next.js app for Prelegal. It has a placeholder sign-in page and, behind it, the Mutual NDA creator ([KAN-5](https://bogdanlangendorf.atlassian.net/browse/KAN-5)). In the NDA creator the user fills in the key terms in a form, sees the complete agreement update as they type, and downloads it as an OpenDocument Text (`.odt`) file. The file opens in LibreOffice, Microsoft Word, Google Docs and Apple Pages.
+The Next.js app for Prelegal. It has a placeholder sign-in page and, behind it, the Mutual NDA creator ([KAN-5](https://bogdanlangendorf.atlassian.net/browse/KAN-5), [KAN-7](https://bogdanlangendorf.atlassian.net/browse/KAN-7)). In the NDA creator the user chats with an AI assistant, which asks about the agreement and fills in the NDA from the answers. The complete agreement updates live next to the chat, and the user downloads it as an OpenDocument Text (`.odt`) file. The file opens in LibreOffice, Microsoft Word, Google Docs and Apple Pages.
 
 The app needs the FastAPI backend in [`../backend`](../backend). Start the whole stack from the repo root with `scripts/start.sh`; see the [root README](../README.md).
 
@@ -31,7 +31,8 @@ lib/api/client.ts       Browser calls to the backend: login, logout
 lib/api/server.ts       getCurrentUser() for server components (reads BACKEND_URL at runtime)
 components/shell        App header with "Signed in as …" and Sign out; the "unavailable" page
 components/login        The sign-in form
-components/Nda*         NDA creator: form state, form, preview
+components/Nda*         NDA creator: values, assistant chat, preview
+lib/chat/               Assistant chat: API call, useNdaChat hook, merging the assistant's updates
 lib/nda/                NDA logic: template loading and parsing, document model, .odt export
 ```
 
@@ -46,18 +47,22 @@ lib/nda/                NDA logic: template loading and parsing, document model,
 The agreement is a filled-in **Cover Page** followed by Common Paper's **Mutual NDA Standard Terms**, which come from the template dataset in [`../data/templates`](../data/templates) (or `TEMPLATES_DIR`).
 
 ```
-components/NdaCreator   Client component: form state, live preview, download
-components/NdaForm      The key-terms form
+components/NdaCreator   Client component: NDA values, live preview, download
+components/NdaChat      The assistant chat (useNdaChat in lib/chat/)
 components/NdaPreview   Renders the document as HTML
 lib/nda/load.ts         Finds the template through data/templates/manifest.json and reads it
 lib/nda/terms.ts        Parses the template Markdown into clauses and inline runs
-lib/nda/document.ts     Builds the document model from the form values
+lib/nda/document.ts     Builds the document model from the NDA values
 lib/nda/odt.ts          Writes the document model as an .odt file (with JSZip)
 ```
 
 The HTML preview and the `.odt` export both render the same document model (`lib/nda/types.ts`), so the download always matches the preview. Values that haven't been filled in yet show as highlighted placeholders, such as **[Fill in state]**. References to Cover Page terms in the Standard Terms (e.g. "the Purpose") are kept as written, as in the original agreement, and are highlighted in the preview.
 
-The NDA itself is generated in the browser: what the user types into the NDA form is never sent to the server. Only the sign-in name and email go to the backend.
+### The assistant
+
+Each chat turn posts the conversation so far and the current NDA values to `/api/chat/nda`. The backend asks the LLM and returns the assistant's reply plus the fields to update (`updates`). `lib/chat/merge.ts` applies those to the values, and the preview follows. The assistant speaks first. A failed turn leaves the document unchanged and can be retried. The chat history lives only in the page, so it's gone on reload.
+
+The `.odt` file is generated in the browser. The chat messages and NDA values are sent to the backend, which passes them to the LLM provider (OpenRouter, served by Cerebras).
 
 ## License
 
