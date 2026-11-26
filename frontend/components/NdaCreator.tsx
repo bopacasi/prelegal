@@ -13,7 +13,7 @@ export function NdaCreator({ terms }: { terms: StandardTerms }) {
   const [error, setError] = useState<string | null>(null);
 
   // Default the Effective Date to today. This runs after hydration, because
-  // the page is pre-rendered at build time, when "today" is a different date.
+  // the server renders the page, and "today" there may differ from the user's.
   useEffect(() => {
     setValues((v) => (v.effectiveDate ? v : { ...v, effectiveDate: todayIso() }));
   }, []);

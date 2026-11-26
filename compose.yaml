@@ -1,0 +1,35 @@
+# Prelegal V1 stack. Use scripts/start.sh, scripts/stop.sh and scripts/test.sh.
+name: prelegal
+
+services:
+  backend:
+    build:
+      context: ./backend
+      target: runtime
+    ports:
+      - "8000:8000" # API docs at http://localhost:8000/docs
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: runner
+      args:
+        BACKEND_URL: http://backend:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # End-to-end tests against the running stack: scripts/test.sh
+  integration:
+    profiles: [test]
+    build:
+      context: ./tests/integration
+    environment:
+      FRONTEND_URL: http://frontend:3000
+      BACKEND_URL: http://backend:8000
+    depends_on:
+      frontend:
+        condition: service_healthy

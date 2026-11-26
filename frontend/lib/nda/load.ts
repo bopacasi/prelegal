@@ -5,9 +5,11 @@ import type { StandardTerms } from "./types";
 
 /**
  * The template dataset lives in data/templates/ at the repo root. The app runs
- * from frontend/, so it's one level up from the working directory.
+ * from frontend/, so by default it's one level up from the working directory.
+ * The Docker image sets TEMPLATES_DIR instead.
  */
-const TEMPLATES_DIR = path.join(process.cwd(), "..", "data", "templates");
+const TEMPLATES_DIR =
+  process.env.TEMPLATES_DIR ?? path.join(process.cwd(), "..", "data", "templates");
 
 type Manifest = {
   templates: {
@@ -19,7 +21,7 @@ type Manifest = {
 
 /**
  * Load and parse a template's Standard Terms, using the manifest to find the
- * file. Server-only: runs when Next.js renders the page at build time.
+ * file. Server-only: runs when Next.js renders the page.
  */
 export async function loadStandardTerms(
   slug = "mutual-nda",
