@@ -21,6 +21,22 @@ Other scripts:
 | `npm test` | Run the unit tests (Vitest). |
 | `npm run typecheck` | Check types with `tsc`. |
 
+## Docker
+
+You don't need Node.js installed. Run these from the **repo root**, because the image needs both `frontend/` and `data/`.
+
+```console
+# Type-check and run the unit tests
+docker build -f frontend/Dockerfile --target test -t prelegal-frontend-test .
+docker run --rm prelegal-frontend-test
+
+# Build and run the app on http://localhost:3000
+docker build -f frontend/Dockerfile -t prelegal-frontend .
+docker run --rm -p 3000:3000 prelegal-frontend
+```
+
+The production image runs the [standalone](https://nextjs.org/docs/app/api-reference/config/next-config-js/output) Next.js server on `node:22-alpine` as the non-root `node` user.
+
 ## How it works
 
 The agreement is a filled-in **Cover Page** followed by Common Paper's **Mutual NDA Standard Terms**, which come from the template dataset in [`../data/templates`](../data/templates). The app must run from `frontend/` with `data/` next to it, because the template is read from there at build time.
