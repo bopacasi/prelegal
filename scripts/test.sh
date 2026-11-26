@@ -15,6 +15,7 @@ docker run --rm prelegal-frontend-test
 
 echo "== Integration tests"
 trap scripts/stop.sh EXIT
+export FAKE_LLM=true # scripted AI assistant: no API key or credits needed
 scripts/start.sh
 docker compose --profile test run --rm --build integration
 
