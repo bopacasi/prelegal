@@ -10,7 +10,7 @@
 #   docker build -f frontend/Dockerfile --target test -t prelegal-frontend-test .
 #   docker run --rm prelegal-frontend-test
 
-ARG NODE_VERSION=22
+ARG NODE_VERSION=24
 
 # --- Dependencies ------------------------------------------------------------
 FROM node:${NODE_VERSION}-alpine AS deps
