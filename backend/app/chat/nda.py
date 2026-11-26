@@ -3,7 +3,7 @@
 import json
 from datetime import date
 
-from app.chat.schemas import NdaValues
+from app.chat.schemas import NdaValues, PartyValues
 
 RULES = """\
 You are Prelegal's assistant. You help the user fill in a Mutual Non-Disclosure \
@@ -37,18 +37,13 @@ Fields:
 - party1, party2: each party's company, signatory name, title and noticeAddress \
 (an email or postal address for legal notices)."""
 
-PARTY_FIELDS = ("company", "name", "title", "noticeAddress")
+PARTY_FIELDS = list(PartyValues.model_fields)
+REQUIRED_TEXT_FIELDS = ("purpose", "effectiveDate", "governingLaw", "jurisdiction")
 
 
 def missing_fields(values: NdaValues) -> list[str]:
     """Names of the fields that still need a value."""
-    checks = {
-        "purpose": values.purpose,
-        "effectiveDate": values.effectiveDate,
-        "governingLaw": values.governingLaw,
-        "jurisdiction": values.jurisdiction,
-    }
-    missing = [name for name, value in checks.items() if not value.strip()]
+    missing = [name for name in REQUIRED_TEXT_FIELDS if not getattr(values, name).strip()]
     if values.mndaTerm == "expires" and values.mndaTermYears is None:
         missing.append("mndaTermYears")
     if values.confidentialityTerm == "years" and values.confidentialityYears is None:

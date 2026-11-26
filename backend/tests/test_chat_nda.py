@@ -3,7 +3,7 @@
 from datetime import date
 
 from app.chat.nda import build_system_prompt, missing_fields
-from app.chat.schemas import NdaChatRequest, NdaValues
+from app.chat.schemas import NdaChatRequest, NdaUpdates, NdaValues
 from app.chat.service import OUTPUT_SCHEMA, START_MESSAGE, build_messages
 from tests.helpers import nda_values
 
@@ -18,7 +18,7 @@ def test_missing_fields_of_fresh_document() -> None:
     assert missing_fields(values()) == [
         "governingLaw",
         "jurisdiction",
-        *[f"party{n}.{f}" for n in (1, 2) for f in ("company", "name", "title", "noticeAddress")],
+        *[f"party{n}.{f}" for n in (1, 2) for f in ("name", "title", "company", "noticeAddress")],
     ]
 
 
@@ -37,12 +37,12 @@ def test_system_prompt_has_values_date_and_missing_list() -> None:
     prompt = build_system_prompt(values(governingLaw="Delaware"), date(2026, 11, 26))
     assert "Today is 2026-11-26." in prompt
     assert '"governingLaw": "Delaware"' in prompt
-    assert "Still missing: jurisdiction, party1.company" in prompt
+    assert "Still missing: jurisdiction, party1.name, party1.title" in prompt
 
 
 def test_start_message_only_without_history() -> None:
-    request = NdaChatRequest(messages=[], values=values())
-    assert build_messages(request, date(2026, 11, 26))[1:] == [START_MESSAGE]
+    request = NdaChatRequest(messages=[], values=values(), today=date(2026, 11, 26))
+    assert build_messages(request)[1:] == [START_MESSAGE]
 
 
 def test_output_schema_is_strict() -> None:
@@ -62,3 +62,33 @@ def test_output_schema_is_strict() -> None:
         assert obj["additionalProperties"] is False
         assert obj["required"] == list(obj["properties"])
     assert "$ref" not in str(OUTPUT_SCHEMA) and "$defs" not in OUTPUT_SCHEMA
+
+
+def test_output_schema_keeps_every_field() -> None:
+    updates = OUTPUT_SCHEMA["properties"]["updates"]
+    party = updates["properties"]["party1"]["anyOf"][0]
+    assert party["required"] == ["name", "title", "company", "noticeAddress"]
+    assert set(updates["required"]) == set(NdaUpdates.model_fields)
+
+
+def schema_keywords(node) -> set[str]:
+    """Keywords used anywhere in a schema, not counting property names."""
+    if isinstance(node, list):
+        return set().union(*(schema_keywords(item) for item in node))
+    if not isinstance(node, dict):
+        return set()
+    found = set(node) | schema_keywords([v for k, v in node.items() if k != "properties"])
+    return found | schema_keywords(list(node.get("properties", {}).values()))
+
+
+def test_output_schema_leaves_validation_keywords_to_pydantic() -> None:
+    # Strict modes often reject these; pydantic still enforces them on the answer.
+    dropped = {"maxLength", "minLength", "minimum", "maximum", "format", "title", "default", "$defs", "$ref"}
+    assert schema_keywords(OUTPUT_SCHEMA) & dropped == set()
+
+
+def test_update_models_cover_every_value_field() -> None:
+    from app.chat.schemas import PartyUpdates, PartyValues
+
+    assert set(NdaUpdates.model_fields) - {"party1", "party2"} == set(NdaValues.model_fields) - {"parties"}
+    assert set(PartyUpdates.model_fields) == set(PartyValues.model_fields)

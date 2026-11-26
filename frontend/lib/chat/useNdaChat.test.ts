@@ -5,16 +5,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/lib/api/client";
 import { defaultValues } from "@/lib/nda/document";
 import { sendNdaChat } from "./api";
+import { MAX_HISTORY } from "./types";
 import { useNdaChat } from "./useNdaChat";
 
 vi.mock("./api", () => ({ sendNdaChat: vi.fn() }));
 const send = vi.mocked(sendNdaChat);
 
-function renderChat() {
+function renderChat(effectiveDate = "2026-11-26") {
   return renderHook(
     () => {
-      const [values, setValues] = useState(defaultValues("2026-11-26"));
-      return { values, chat: useNdaChat(values, setValues) };
+      const [values, setValues] = useState(defaultValues(effectiveDate));
+      return { values, setValues, chat: useNdaChat(values, setValues) };
     },
     { wrapper: StrictMode },
   );
@@ -83,5 +84,29 @@ describe("useNdaChat", () => {
     send.mockRejectedValueOnce(new ApiError(401));
     const { result } = renderChat();
     await waitFor(() => expect(result.current.chat.error).toMatch(/sign in again/));
+  });
+
+  it("waits for the effective date before greeting", async () => {
+    const { result } = renderChat("");
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(send).not.toHaveBeenCalled();
+
+    act(() => result.current.setValues((v) => ({ ...v, effectiveDate: "2026-11-26" })));
+    await waitFor(() => expect(send).toHaveBeenCalledTimes(1));
+    expect(send).toHaveBeenCalledWith([], expect.objectContaining({ effectiveDate: "2026-11-26" }));
+  });
+
+  it("sends only the most recent messages in long conversations", async () => {
+    const { result } = renderChat();
+    await waitFor(() => expect(result.current.chat.messages).toHaveLength(1));
+    for (let i = 1; i <= 25; i++) {
+      send.mockResolvedValueOnce({ reply: `Answer ${i}`, updates: {} });
+      act(() => result.current.chat.send(`Question ${i}`));
+      await waitFor(() => expect(result.current.chat.messages).toHaveLength(1 + 2 * i));
+    }
+    const lastHistory = send.mock.calls.at(-1)![0];
+    expect(lastHistory).toHaveLength(MAX_HISTORY);
+    expect(lastHistory.at(-1)).toEqual({ role: "user", content: "Question 25" });
+    expect(result.current.chat.messages).toHaveLength(51); // the page still shows everything
   });
 });

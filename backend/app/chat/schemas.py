@@ -42,6 +42,7 @@ class NdaValues(BaseModel):
 class NdaChatRequest(BaseModel):
     messages: list[ChatMessage] = Field(max_length=100)
     values: NdaValues
+    today: date  # the user's local date, so "today" matches their calendar
 
 
 class PartyUpdates(BaseModel):

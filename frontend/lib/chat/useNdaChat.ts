@@ -5,9 +5,7 @@ import { ApiError } from "@/lib/api/client";
 import type { NdaValues } from "@/lib/nda/types";
 import { sendNdaChat } from "./api";
 import { applyUpdates } from "./merge";
-import type { ChatMessage } from "./types";
-
-export const MAX_MESSAGE_LENGTH = 4000;
+import { MAX_HISTORY, MAX_MESSAGE_LENGTH, type ChatMessage } from "./types";
 
 function errorMessage(error: unknown): string {
   return error instanceof ApiError && error.status === 401
@@ -24,7 +22,7 @@ export function useNdaChat(values: NdaValues, setValues: Dispatch<SetStateAction
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const valuesRef = useRef(values);
+  const valuesRef = useRef(values); // the latest values, without restarting the greeting effect
   const started = useRef(false);
 
   useEffect(() => {
@@ -36,7 +34,7 @@ export function useNdaChat(values: NdaValues, setValues: Dispatch<SetStateAction
       setPending(true);
       setError(null);
       try {
-        const turn = await sendNdaChat(history, valuesRef.current);
+        const turn = await sendNdaChat(history.slice(-MAX_HISTORY), valuesRef.current);
         setValues((current) => applyUpdates(current, turn.updates));
         setMessages([...history, { role: "assistant", content: turn.reply }]);
       } catch (err) {
@@ -48,19 +46,23 @@ export function useNdaChat(values: NdaValues, setValues: Dispatch<SetStateAction
     [setValues],
   );
 
-  // Ask for the greeting once (React's StrictMode runs effects twice in development).
+  // Greet once (StrictMode runs effects twice in development), after the page
+  // has defaulted the Effective Date, so the assistant doesn't ask for it.
+  const ready = values.effectiveDate !== "";
   useEffect(() => {
-    if (started.current) return;
+    if (!ready || started.current) return;
     started.current = true;
     void runTurn([]);
-  }, [runTurn]);
+  }, [ready, runTurn]);
 
-  function send(text: string) {
+  /** Send a message; returns false if there was nothing to send or a turn is running. */
+  function send(text: string): boolean {
     const content = text.trim().slice(0, MAX_MESSAGE_LENGTH);
-    if (!content || pending) return;
+    if (!content || pending) return false;
     const history: ChatMessage[] = [...messages, { role: "user", content }];
     setMessages(history);
     void runTurn(history);
+    return true;
   }
 
   function retry() {

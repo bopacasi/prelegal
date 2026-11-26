@@ -21,7 +21,7 @@ def stub(client: TestClient) -> Iterator[StubLlm]:
 
 
 def chat(client: TestClient, messages: list[dict] | None = None, **values):
-    return client.post(URL, json={"messages": messages or [], "values": nda_values(**values)})
+    return client.post(URL, json={"messages": messages or [], "values": nda_values(**values), "today": "2026-11-26"})
 
 
 def test_requires_sign_in(client: TestClient, stub: StubLlm) -> None:
@@ -91,3 +91,9 @@ def test_rejects_invalid_requests(client: TestClient, stub: StubLlm) -> None:
 def test_missing_api_key_gives_502_not_a_crash(client: TestClient) -> None:
     sign_in(client)  # default test settings: no key, no fake LLM
     assert chat(client).status_code == 502
+
+
+def test_prompt_uses_the_users_date(client: TestClient, stub: StubLlm) -> None:
+    sign_in(client)
+    client.post(URL, json={"messages": [], "values": nda_values(), "today": "2027-01-01"})
+    assert "Today is 2027-01-01." in stub.calls[0]["messages"][0]["content"]

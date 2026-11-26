@@ -1,8 +1,9 @@
 """A scripted stand-in for the LLM, so tests never call the real one.
 
-It understands "field: value" lines in the last user message, for example
-"governingLaw: Delaware" or "party1.company: Acme Inc.", and sets those fields.
-A message containing FAIL_TRIGGER makes it fail like an unreachable LLM.
+Before any assistant reply it greets. After that it reads "field: value" lines
+in the last user message, for example "governingLaw: Delaware" or
+"party1.company: Acme Inc.", and sets those fields. A message containing
+FAIL_TRIGGER makes it fail like an unreachable LLM.
 """
 
 from typing import Any
@@ -30,10 +31,10 @@ def _parse_updates(text: str) -> dict[str, Any]:
 
 class FakeLlmClient:
     def complete_json(self, messages: list[Message], schema: dict[str, Any], schema_name: str) -> dict[str, Any]:
-        user_messages = [m["content"] for m in messages if m["role"] == "user"]
-        last = user_messages[-1] if user_messages else ""
+        last = next((m["content"] for m in reversed(messages) if m["role"] == "user"), "")
         if FAIL_TRIGGER in last:
             raise LlmError("Fake LLM failure requested")
-        if len([m for m in messages if m["role"] == "assistant"]) == 0 and ":" not in last:
+        is_opening = not any(m["role"] == "assistant" for m in messages)
+        if is_opening:
             return {"reply": GREETING, "updates": {}}
         return {"reply": ACKNOWLEDGEMENT, "updates": _parse_updates(last)}

@@ -1,7 +1,5 @@
 """One turn of the NDA chat: prompt, LLM call, validated result."""
 
-from datetime import date
-
 from pydantic import ValidationError
 
 from app.chat.nda import build_system_prompt
@@ -18,14 +16,14 @@ START_MESSAGE: Message = {
 }
 
 
-def build_messages(request: NdaChatRequest, today: date) -> list[Message]:
-    system: Message = {"role": "system", "content": build_system_prompt(request.values, today)}
+def build_messages(request: NdaChatRequest) -> list[Message]:
+    system: Message = {"role": "system", "content": build_system_prompt(request.values, request.today)}
     history: list[Message] = [{"role": m.role, "content": m.content} for m in request.messages]
     return [system, *(history or [START_MESSAGE])]
 
 
-def run_nda_chat(llm: LlmClient, request: NdaChatRequest, today: date) -> NdaChatTurn:
-    raw = llm.complete_json(build_messages(request, today), OUTPUT_SCHEMA, "nda_chat_turn")
+def run_nda_chat(llm: LlmClient, request: NdaChatRequest) -> NdaChatTurn:
+    raw = llm.complete_json(build_messages(request), OUTPUT_SCHEMA, "nda_chat_turn")
     try:
         return NdaChatTurn.model_validate(raw)
     except ValidationError as error:

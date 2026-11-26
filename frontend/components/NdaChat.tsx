@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type Dispatch, type FormEvent, type KeyboardEvent, type SetStateAction } from "react";
-import { MAX_MESSAGE_LENGTH, useNdaChat } from "@/lib/chat/useNdaChat";
+import { MAX_MESSAGE_LENGTH } from "@/lib/chat/types";
+import { useNdaChat } from "@/lib/chat/useNdaChat";
 import type { NdaValues } from "@/lib/nda/types";
 
 const bubble = {
@@ -9,11 +10,11 @@ const bubble = {
   assistant: "mr-8 self-start bg-slate-100 text-slate-800",
 };
 
-type Props = { values: NdaValues; onChange: Dispatch<SetStateAction<NdaValues>> };
+type Props = { values: NdaValues; setValues: Dispatch<SetStateAction<NdaValues>> };
 
 /** Chat with the assistant, which fills in the NDA from the conversation. */
-export function NdaChat({ values, onChange }: Props) {
-  const { messages, pending, error, send, retry } = useNdaChat(values, onChange);
+export function NdaChat({ values, setValues }: Props) {
+  const { messages, pending, error, send, retry } = useNdaChat(values, setValues);
   const [draft, setDraft] = useState("");
   const log = useRef<HTMLDivElement>(null);
 
@@ -23,9 +24,7 @@ export function NdaChat({ values, onChange }: Props) {
 
   function submit(event?: FormEvent) {
     event?.preventDefault();
-    if (pending || !draft.trim()) return;
-    send(draft);
-    setDraft("");
+    if (send(draft)) setDraft("");
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {

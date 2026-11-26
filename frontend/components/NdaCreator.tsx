@@ -47,7 +47,7 @@ export function NdaCreator({ terms }: { terms: StandardTerms }) {
         <h2 id="chat-heading" className="text-lg font-semibold">
           Assistant
         </h2>
-        <NdaChat values={values} onChange={setValues} />
+        <NdaChat values={values} setValues={setValues} />
       </section>
 
       <section aria-labelledby="preview-heading" className="lg:sticky lg:top-6">

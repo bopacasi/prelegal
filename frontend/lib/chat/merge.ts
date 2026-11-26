@@ -1,12 +1,12 @@
 import type { NdaValues, Party } from "@/lib/nda/types";
-import type { NdaUpdates, PartyUpdates } from "./types";
+import type { NdaUpdates } from "./types";
 
 /** The entries of an object whose value isn't null or undefined. */
 function present<T extends object>(updates: T): Partial<T> {
   return Object.fromEntries(Object.entries(updates).filter(([, value]) => value != null)) as Partial<T>;
 }
 
-function mergeParty(party: Party, updates: PartyUpdates = {}): Party {
+function mergeParty(party: Party, updates: Partial<Party> = {}): Party {
   return { ...party, ...present(updates) };
 }
 

@@ -37,7 +37,7 @@ def browser() -> Iterator[httpx2.Client]:
 
 
 def chat(client: httpx2.Client, messages: list[dict]) -> httpx2.Response:
-    return client.post("/api/chat/nda", json={"messages": messages, "values": VALUES})
+    return client.post("/api/chat/nda", json={"messages": messages, "values": VALUES, "today": "2026-11-26"})
 
 
 def test_nda_page_shows_the_assistant(browser: httpx2.Client) -> None:

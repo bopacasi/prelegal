@@ -18,7 +18,7 @@ beforeEach(() => {
 afterEach(cleanup);
 
 function renderChat() {
-  render(<NdaChat values={defaultValues("2026-11-26")} onChange={vi.fn()} />);
+  render(<NdaChat values={defaultValues("2026-11-26")} setValues={vi.fn()} />);
   return { input: screen.getByRole("textbox", { name: "Your message" }), user: userEvent.setup() };
 }
 
